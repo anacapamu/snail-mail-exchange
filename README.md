@@ -18,7 +18,7 @@ To make this program accessible to all in the community, participants do not hav
 ## Common Pitfalls
 `KeyError` in lines 23-27
 
->Double check the `.csv` file to make sure that there isn't a space after column header, i.e. "Email Address " instead of "Email Address"
+>Double check the **.csv** file to make sure that there isn't a space after column header, i.e. "Email Address " instead of "Email Address"
 
 Warning: Unable to find a distribution where all senders can send their maximum number of letters and all receivers can receive their maximum number of letters.
 

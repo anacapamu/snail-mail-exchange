@@ -125,6 +125,7 @@ def match_sender_with_recipients(balanced_people):
 
     if not (all_sent and all_received):
         print('Warning: Unable to find a distribution where all senders can send their maximum number of letters and all receivers can receive their maximum number of letters.')
+        raise SystemExit()
     else:
         for sender, recipients in distribution.items():
             print(f"{sender} sends letters to {', '.join(recipients)}")
@@ -132,12 +133,13 @@ def match_sender_with_recipients(balanced_people):
     return distribution
 
 def get_date(prompt):
-    while True:
-        date_str = input(prompt)
-        try:
-            return datetime.strptime(date_str, '%A, %B %d, %Y')
-        except ValueError:
-            print("Error: The date was not in the expected format. Please use the format 'Day, Month Date, Year', e.g. 'Saturday, July 8, 2023'.")
+    date_str = input(prompt)
+
+    try:
+        datetime.strptime(date_str, '%A, %B %d, %Y')
+        return date_str
+    except ValueError:
+        print("Error: The date was not in the expected format. Please use the format 'Day, Month Date, Year', e.g. 'Saturday, July 8, 2023'.")
 
 def generate_email_templates(distribution, people):
     contact_deadline = get_date('When should the user contact you if they don’t receive mail? (e.g. "Saturday, July 8, 2023") ')
@@ -147,19 +149,23 @@ def generate_email_templates(distribution, people):
         for name, recipients in distribution.items():
             person = people[name]
 
+            first_name = name.split()[0]
+
             if person['send_count'] == 0:
                 f.write(f"{person['email']}\n")
                 f.write(f"\n")
-                f.write(f"Hi {name},\n")
+                f.write(f"Hi {first_name},\n")
                 f.write(f"\n")
                 f.write(f"Matches have been sent out to the senders. Please let me know if you don't receive anything in the mail by {contact_deadline}.\n")
                 f.write(f"Thanks for participating in the Snail Mail Exchange!\n")
                 f.write(f"Cheers,\n")
                 f.write(f"\n") * 2
+                f.write(f"----------------------------------")
+                f.write(f"\n") * 2
             else:
                 f.write(f"{person['email']}\n")
                 f.write(f"\n")
-                f.write(f"Hi {name},\n")
+                f.write(f"Hi {first_name},\n")
                 f.write(f"\n")
                 f.write(f"You have been matched with:\n")
 
@@ -181,7 +187,8 @@ def generate_email_templates(distribution, people):
                 f.write(f"Thanks for participating in the snail mail exchange!\n")
                 f.write(f"Cheers,\n")
                 f.write(f"\n") * 2
-
+                f.write(f"----------------------------------")
+                f.write(f"\n") * 2
 
 if __name__ == "__main__":
     if file_exists("snail_mail_exchange.csv"):
